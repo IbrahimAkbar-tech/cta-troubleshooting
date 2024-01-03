@@ -31,6 +31,7 @@ function checkScript(script_URL) {
           token.name.slice(37) +
           " is the current script injected on this page"
       );
+      return true;
     }
   }
 }
@@ -53,28 +54,31 @@ function isCtaHidden() {
 
 //Check if the script is injected and if the CTA is hidden
 function checkCta() {
-  checkScript(script_URL);
-  try {
-    if (!GISAPP.serverInjectionService.getSystemConfig().persistentCta) {
-      if (hasClass(persistentCta, "gis-circle-animate-hide")) {
-        alert(
-          "Client is non-persistent, executing clerkIsAvailable() to show CTA"
-        );
-        console.log(
-          "Client is non-persistent, executing clerkIsAvailable() to show CTA"
-        );
-        clerkIsAvailable();
+  if (checkScript(script_URL)) {
+    try {
+      if (!GISAPP.serverInjectionService.getSystemConfig().persistentCta) {
+        if (hasClass(persistentCta, "gis-circle-animate-hide")) {
+          alert(
+            "Client is non-persistent, executing clerkIsAvailable() to show CTA"
+          );
+          console.log(
+            "Client is non-persistent, executing clerkIsAvailable() to show CTA"
+          );
+          clerkIsAvailable();
+        }
       }
+    } catch (err) {
+      console.log("Cannot locate #gis-cta. Forcing clerkIsAvailable()");
+      console.log(
+        "If you see clerkIsAvailable is not defined in the console, then script is not injected"
+      );
+      clerkIsAvailable();
+      return;
     }
-  } catch (err) {
-    console.log("Cannot locate #gis-cta. Forcing clerkIsAvailable()");
-    console.log(
-      "If you see clerkIsAvailable is not defined in the console, then script is not injected"
-    );
-    clerkIsAvailable();
-    return;
+    isCtaHidden();
+  } else {
+    console.log("script is not injected");
   }
-  isCtaHidden();
 }
 
 const gisCta = document.querySelector(".gis-cta-reset");
