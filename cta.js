@@ -19,6 +19,14 @@ function hasClass(element, clsName) {
   return (" " + element.className + " ").indexOf(" " + clsName + " ") > -1;
 }
 
+function checkApi() {
+  if (GISAPP.serverInjectionService.getApiEnabled()) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 //Check if the GIS script is being injected
 function checkScript(script_URL) {
   var requests = window.performance.getEntriesByType("resource");
@@ -55,24 +63,31 @@ function isCtaHidden() {
 //Check if the script is injected and if the CTA is hidden
 function checkCta() {
   if (checkScript(script_URL)) {
-    try {
-      if (!GISAPP.serverInjectionService.getSystemConfig().persistentCta) {
-        if (hasClass(persistentCta, "gis-circle-animate-hide")) {
-          alert(
-            "Client is non-persistent, executing clerkIsAvailable() to show CTA"
-          );
-          console.log(
-            "Client is non-persistent, executing clerkIsAvailable() to show CTA"
-          );
-          clerkIsAvailable();
+    if (!checkApi()) {
+      try {
+        if (!GISAPP.serverInjectionService.getSystemConfig().persistentCta) {
+          if (hasClass(persistentCta, "gis-circle-animate-hide")) {
+            alert(
+              "Client is non-persistent, executing clerkIsAvailable() to show CTA"
+            );
+            console.log(
+              "Client is non-persistent, executing clerkIsAvailable() to show CTA"
+            );
+            clerkIsAvailable();
+          }
         }
+      } catch (err) {
+        console.log("Cannot locate #gis-cta. Forcing clerkIsAvailable()");
+        console.log(
+          "If you see clerkIsAvailable is not defined in the console, then script is not injected"
+        );
+        clerkIsAvailable();
+        return;
       }
-    } catch (err) {
-      console.log("Cannot locate #gis-cta. Forcing clerkIsAvailable()");
-      clerkIsAvailable();
-      return;
+      isCtaHidden();
+    } else if (checkApi()) {
+      console.log("Client is API");
     }
-    isCtaHidden();
   } else {
     console.log("script is not injected");
   }
@@ -83,5 +98,6 @@ const persistentCta = document.querySelector("#gis-cta");
 
 var token = "";
 const script_URL = "https://gis.goinstore.com/gis/script/" + token;
+//const script_URL = 'https://csi.goinstore.com/gis/script/' + token;
 
 checkCta();
