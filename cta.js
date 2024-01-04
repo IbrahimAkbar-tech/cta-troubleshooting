@@ -19,6 +19,16 @@ function hasClass(element, clsName) {
   return (" " + element.className + " ").indexOf(" " + clsName + " ") > -1;
 }
 
+//Check if gis-modal is already opened or not to prevent duplicate UIs
+function checkApiScreen(element) {
+  if (!element) {
+    console.log("Opening API connect screen");
+    gisApi.startCall(() => {}, JSON.stringify({ required: [], optional: [] }));
+  } else {
+    console.log("Screen is already open");
+  }
+}
+
 //Check if client is API or not
 function checkApi() {
   if (GISAPP.serverInjectionService.getApiEnabled()) {
@@ -85,6 +95,7 @@ function checkCta() {
       isCtaHidden();
     } else if (checkApi()) {
       console.log("Client is API");
+      checkApiScreen(gisModal);
     }
   } else {
     console.log("script is not injected");
@@ -93,6 +104,7 @@ function checkCta() {
 
 const gisCta = document.querySelector(".gis-cta-reset");
 const persistentCta = document.querySelector("#gis-cta");
+const gisModal = document.querySelector("#gis-modal-container");
 
 var token = "";
 const script_URL = "https://gis.goinstore.com/gis/script/" + token;
