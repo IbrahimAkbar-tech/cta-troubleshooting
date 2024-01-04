@@ -78,9 +78,6 @@ function checkCta() {
         }
       } catch (err) {
         console.log("Cannot locate #gis-cta. Forcing clerkIsAvailable()");
-        console.log(
-          "If you see clerkIsAvailable is not defined in the console, then script is not injected"
-        );
         clerkIsAvailable();
         return;
       }
