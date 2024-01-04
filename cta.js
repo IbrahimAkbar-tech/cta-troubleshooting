@@ -19,6 +19,7 @@ function hasClass(element, clsName) {
   return (" " + element.className + " ").indexOf(" " + clsName + " ") > -1;
 }
 
+//Check if client is API or not
 function checkApi() {
   if (GISAPP.serverInjectionService.getApiEnabled()) {
     return true;
