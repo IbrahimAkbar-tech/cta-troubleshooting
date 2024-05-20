@@ -95,6 +95,7 @@ function checkCta() {
       isCtaHidden();
     } else if (checkApi()) {
       console.log("Client is API");
+      console.log(); //GISAPP command to retrieve APi status of client
       checkApiScreen(gisModal);
     }
   } else {
