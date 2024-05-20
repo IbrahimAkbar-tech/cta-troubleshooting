@@ -108,6 +108,5 @@ const gisModal = document.querySelector("#gis-modal-container");
 
 var token = "";
 const script_URL = "https://gis.goinstore.com/gis/script/" + token;
-//const script_URL = 'https://csi.goinstore.com/gis/script/' + token;
 
 checkCta();
